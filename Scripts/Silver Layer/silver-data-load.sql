@@ -7,7 +7,6 @@ Purpose:
 	Run this script to re-define the DDL structure of 'Silver' Tables
 ===============================================================================
 */
-
 CREATE TABLE silver.crm_cust_info (
     cst_id             INT,
     cst_key            NVARCHAR(50),
