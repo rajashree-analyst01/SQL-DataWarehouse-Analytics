@@ -48,7 +48,7 @@ SQL Functions Used:
 
 SELECT DISTINCT 
     country 
-FROM gold.dim_customers
+FROM gold.dim_customers_analytics
 ORDER BY country;
 
 -- Retrieve a list of unique categories, subcategories, and products
@@ -57,7 +57,7 @@ SELECT DISTINCT
     category, 
     subcategory, 
     product_name 
-FROM gold.dim_products
+FROM gold.dim_products_analytics
 ORDER BY category, subcategory, product_name;
 
 
@@ -79,7 +79,7 @@ SELECT
     MIN(order_date) AS first_order_date,
     MAX(order_date) AS last_order_date,
     DATEDIFF(MONTH, MIN(order_date), MAX(order_date)) AS order_range_months
-FROM gold.fact_sales;
+FROM gold.fact_sales_analytics;
 
 -- Find the youngest and oldest customer based on birthdate
 
@@ -88,7 +88,7 @@ SELECT
     DATEDIFF(YEAR, MIN(birthdate), GETDATE()) AS oldest_age,
     MAX(birthdate) AS youngest_birthdate,
     DATEDIFF(YEAR, MAX(birthdate), GETDATE()) AS youngest_age
-FROM gold.dim_customers;
+FROM gold.dim_customers_analytics;
 
 
 /*
@@ -104,40 +104,40 @@ SQL Functions Used:
 */
 
 -- Find the Total Sales
-SELECT SUM(sales_amount) AS total_sales FROM gold.fact_sales
+SELECT SUM(sales_amount) AS total_sales FROM gold.fact_sales_analytics
 
 -- Find how many items are sold
-SELECT SUM(quantity) AS total_quantity FROM gold.fact_sales
+SELECT SUM(quantity) AS total_quantity FROM gold.fact_sales_analytics
 
 -- Find the average selling price
-SELECT AVG(price) AS avg_price FROM gold.fact_sales
+SELECT AVG(price) AS avg_price FROM gold.fact_sales_analytics
 
 -- Find the Total number of Orders
-SELECT COUNT(order_number) AS total_orders FROM gold.fact_sales
-SELECT COUNT(DISTINCT order_number) AS total_orders FROM gold.fact_sales
+SELECT COUNT(order_number) AS total_orders FROM gold.fact_sales_analytics
+SELECT COUNT(DISTINCT order_number) AS total_orders FROM gold.fact_sales_analytics
 
 -- Find the total number of products
-SELECT COUNT(product_name) AS total_products FROM gold.dim_products
+SELECT COUNT(product_name) AS total_products FROM gold.dim_products_analytics
 
 -- Find the total number of customers
-SELECT COUNT(customer_key) AS total_customers FROM gold.dim_customers;
+SELECT COUNT(customer_key) AS total_customers FROM gold.dim_customers_analytics;
 
 -- Find the total number of customers that has placed an order
-SELECT COUNT(DISTINCT customer_key) AS total_customers FROM gold.fact_sales;
+SELECT COUNT(DISTINCT customer_key) AS total_customers FROM gold.fact_sales_analytics;
 
 -- Generate a Report that shows all key metrics of the business
 
-SELECT 'Total Sales' AS measure_name, SUM(sales_amount) AS measure_value FROM gold.fact_sales
+SELECT 'Total Sales' AS measure_name, SUM(sales_amount) AS measure_value FROM gold.fact_sales_analytics
 UNION ALL
-SELECT 'Total Quantity', SUM(quantity) FROM gold.fact_sales
+SELECT 'Total Quantity', SUM(quantity) FROM gold.fact_sales_analytics
 UNION ALL
-SELECT 'Average Price', AVG(price) FROM gold.fact_sales
+SELECT 'Average Price', AVG(price) FROM gold.fact_sales_analytics
 UNION ALL
-SELECT 'Total Orders', COUNT(DISTINCT order_number) FROM gold.fact_sales
+SELECT 'Total Orders', COUNT(DISTINCT order_number) FROM gold.fact_sales_analytics
 UNION ALL
-SELECT 'Total Products', COUNT(DISTINCT product_name) FROM gold.dim_products
+SELECT 'Total Products', COUNT(DISTINCT product_name) FROM gold.dim_products_analytics
 UNION ALL
-SELECT 'Total Customers', COUNT(customer_key) FROM gold.dim_customers;
+SELECT 'Total Customers', COUNT(customer_key) FROM gold.dim_customers_analytics;
 
 
 
@@ -159,7 +159,7 @@ SQL Functions Used:
 SELECT
     country,
     COUNT(customer_key) AS total_customers
-FROM gold.dim_customers
+FROM gold.dim_customers_analytics
 GROUP BY country
 ORDER BY total_customers DESC;
 
@@ -168,7 +168,7 @@ ORDER BY total_customers DESC;
 SELECT
     gender,
     COUNT(customer_key) AS total_customers
-FROM gold.dim_customers
+FROM gold.dim_customers_analytics
 GROUP BY gender
 ORDER BY total_customers DESC;
 
@@ -177,7 +177,7 @@ ORDER BY total_customers DESC;
 SELECT
     category,
     COUNT(product_key) AS total_products
-FROM gold.dim_products
+FROM gold.dim_products_analytics
 GROUP BY category
 ORDER BY total_products DESC;
 
@@ -186,7 +186,7 @@ ORDER BY total_products DESC;
 SELECT
     category,
     AVG(cost) AS avg_cost
-FROM gold.dim_products
+FROM gold.dim_products_analytics
 GROUP BY category
 ORDER BY avg_cost DESC;
 
@@ -195,8 +195,8 @@ ORDER BY avg_cost DESC;
 SELECT
     p.category,
     SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_products_analytics p
     ON p.product_key = f.product_key
 GROUP BY p.category
 ORDER BY total_revenue DESC;
@@ -209,8 +209,8 @@ SELECT
     c.first_name,
     c.last_name,
     SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_customers_analytics c
     ON c.customer_key = f.customer_key
 GROUP BY 
     c.customer_key,
@@ -223,8 +223,8 @@ ORDER BY total_revenue DESC;
 SELECT
     c.country,
     SUM(f.quantity) AS total_sold_items
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_customers_analytics c
     ON c.customer_key = f.customer_key
 GROUP BY c.country
 ORDER BY total_sold_items DESC;
@@ -250,8 +250,8 @@ SQL Functions Used:
 SELECT TOP 5
     p.product_name,
     SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_products_analytics p
     ON p.product_key = f.product_key
 GROUP BY p.product_name
 ORDER BY total_revenue DESC;
@@ -264,8 +264,8 @@ FROM (
         p.product_name,
         SUM(f.sales_amount) AS total_revenue,
         RANK() OVER (ORDER BY SUM(f.sales_amount) DESC) AS rank_products
-    FROM gold.fact_sales f
-    LEFT JOIN gold.dim_products p
+    FROM gold.fact_sales_analytics f
+    LEFT JOIN gold.dim_products_analytics p
         ON p.product_key = f.product_key
     GROUP BY p.product_name
 ) AS ranked_products
@@ -276,8 +276,8 @@ WHERE rank_products <= 5;
 SELECT TOP 5
     p.product_name,
     SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_products_analytics p
     ON p.product_key = f.product_key
 GROUP BY p.product_name
 ORDER BY total_revenue;
@@ -289,8 +289,8 @@ SELECT TOP 10
     c.first_name,
     c.last_name,
     SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_customers_analytics c
     ON c.customer_key = f.customer_key
 GROUP BY 
     c.customer_key,
@@ -305,8 +305,8 @@ SELECT TOP 3
     c.first_name,
     c.last_name,
     COUNT(DISTINCT order_number) AS total_orders
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_customers_analytics c
     ON c.customer_key = f.customer_key
 GROUP BY 
     c.customer_key,
