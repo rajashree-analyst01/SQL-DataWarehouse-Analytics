@@ -45,7 +45,7 @@ WITH base_query AS (
         p.subcategory,
         p.cost
     FROM gold.fact_sales f
-    LEFT JOIN gold.dim_products p
+    LEFT JOIN gold.dim_products_analytics p
         ON f.product_key = p.product_key
     WHERE order_date IS NOT NULL  -- only consider valid sales dates
 ),
