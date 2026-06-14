@@ -120,10 +120,8 @@ SELECT
         WHEN current_sales - AVG(current_sales) OVER (PARTITION BY product_name) > 0 THEN 'Above Avg'
         WHEN current_sales - AVG(current_sales) OVER (PARTITION BY product_name) < 0 THEN 'Below Avg'
         ELSE 'Avg'
-    END AS avg_change;
-
+    END AS avg_change,
     -- Year-over-Year Analysis
-
     LAG(current_sales) OVER (PARTITION BY product_name ORDER BY order_year) AS py_sales,
     current_sales - LAG(current_sales) OVER (PARTITION BY product_name ORDER BY order_year) AS diff_py,
     CASE 
@@ -133,7 +131,7 @@ SELECT
     END AS py_change
 FROM yearly_product_sales
 ORDER BY product_name, order_year;
-
+ 
 
 /*
 ===============================================================================
@@ -172,8 +170,8 @@ GROUP BY cost_range
 ORDER BY total_products DESC;
 
 /*Group customers into three segments based on their spending behavior:
-	- VIP: Customers with at least 12 months of history and spending more than €5,000.
-	- Regular: Customers with at least 12 months of history but spending €5,000 or less.
+	- VIP: Customers with at least 12 months of history and spending more than â‚¬5,000.
+	- Regular: Customers with at least 12 months of history but spending â‚¬5,000 or less.
 	- New: Customers with a lifespan less than 12 months.
 And find the total number of customers by each group
 */
