@@ -44,8 +44,8 @@ c.customer_key,
 c.customer_number,
 CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
 DATEDIFF(year, c.birthdate, GETDATE()) age
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
+FROM gold.fact_sales_analytics f
+LEFT JOIN gold.dim_customers_analytics c
 ON c.customer_key = f.customer_key
 WHERE order_date IS NOT NULL)
 
